@@ -83,7 +83,7 @@ MemNo INT NOT NULL,
 Address VARCHAR(20),
 Gname VARCHAR(10),
 PhoneNo VARCHAR(20),
-PRIMARY KEY (ID),
+PRIMARY KEY (ID, MemNo),
 FOREIGN KEY (MemNo) REFERENCES Member(MemNo) 
 );
 
