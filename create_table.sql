@@ -6,10 +6,31 @@ Address VARCHAR(30) NOT NULL,
 Fname VARCHAR(10) NOT NULL,
 Mname VARCHAR(10),
 Lname VARCHAR(10) NOT NULL,
-DOB DATE NOT NULL CHECK (DOB <= '2004-11-30'),
+DOB DATE NOT NULL,
 Gender CHAR(1) NOT NULL CHECK (Gender = 'F' OR Gender = 'M'),
 PRIMARY KEY (ID)
 );
+
+DELIMITER //
+CREATE TRIGGER DOB_CHECK
+BEFORE INSERT ON person
+FOR EACH ROW
+BEGIN
+-- IF (DATEDIFF(CURDATE(), NEW.DOB) BETWEEN 0 AND 16*365) 
+IF NEW.DOB > DATE_SUB(CURDATE(), INTERVAL 16 YEAR)
+THEN SIGNAL SQLSTATE '45000' 
+SET MESSAGE_TEXT = 'Age less than 16 years old!';
+END IF;
+END; //
+DELIMITER ;
+
+-- test cases
+-- INSERT INTO Person VALUES('P000', 'Los Angeles, Califonia', 'John', NULL, 'Mayer', '1966-12-30', 'M');
+-- INSERT INTO Person VALUES('P001', 'Richardson, Texas', 'Alice', 'Louise', 'Abele', '2006-1-7', 'F');
+-- INSERT INTO Person VALUES('P002', 'United Kingdom', 'Julian', 'K', 'Patrick', '2004-5-5', 'F');
+-- INSERT INTO Person VALUES('P003', 'Dallas,Texas', 'Meng', NULL, 'Zhang', '2004-12-1', 'M');
+-- clear the person table
+-- DELETE FROM person;
 
  CREATE TABLE Person_PhoneNo 
 ( PhoneNo VARCHAR(20) NOT NULL, 
